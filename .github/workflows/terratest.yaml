@@ -10,6 +10,11 @@ on:
       - 'modules/vpc/**'
       - 'tests/modules/vpc/**'
 
+permissions:
+  id-token: write
+  contents: read      
+
+
 jobs:
   terratest:
     name: Terratest (VPC Module)
