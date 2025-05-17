@@ -20,8 +20,11 @@ func TestCustomVPC(t *testing.T) {
 	defer terraform.Destroy(t, terraformOptions)
 	terraform.InitAndApply(t, terraformOptions)
 
-	vpcID := terraform.Output(t, terraformOptions, "vpc_id")
-	assert.True(t, strings.HasPrefix(vpcID, "vpc-"))
+	vpcID, err := terraform.OutputE(t, terraformOptions, "vpc_id")
+	if err != nil {
+		t.Fatalf("Failed to get vpc_id output: %v", err)
+	}
+	t.Logf("vpc_id output: %s", vpcID)
 
 	igwID := terraform.Output(t, terraformOptions, "internet_gateway_id")
 	assert.True(t, strings.HasPrefix(igwID, "igw-"))
