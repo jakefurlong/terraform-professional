@@ -70,3 +70,6 @@ resource "aws_security_group" "default_sg" {
     Name = "sg-${var.aws_network_name}"
   }
 }
+
+
+
