@@ -9,3 +9,4 @@ resource "aws_db_instance" "rds_database" {
   username = var.db_username
   password = var.db_password
 }
+
