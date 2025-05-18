@@ -2,17 +2,9 @@ name: Terratest for ASG Module
 
 on:
   push:
-    paths:
-      - 'modules/asg/**'
-      - 'tests/modules/asg/**'
-      - 'modules/alb/**'
-      - 'tests/modules/asg/**'
+    branches: [test]
   pull_request:
-    paths:
-      - 'modules/asg/**'
-      - 'tests/modules/asg/**'
-      - 'modules/alb/**'
-      - 'tests/modules/alb/**'
+    branches: [test]
 
 permissions:
   id-token: write
