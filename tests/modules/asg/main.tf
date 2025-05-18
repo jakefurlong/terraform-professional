@@ -11,16 +11,3 @@ module "asg" {
   enable_autoscaling = true
   # optional aws_target_group_arn = module.alb.target_group_arn - required for integration testing
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
