@@ -1,4 +1,9 @@
 output "alb_dns_name" {
-  value       = module.alb.alb_dns_name
-  description = "The dns name of the load balancer"
+  description = "The domain name of the load balancer"
+  value       = aws_lb.terraform_alb.dns_name
+}
+
+output "aws_target_group_arn" {
+  description = "ARN of the Target Group"
+  value = null
 }

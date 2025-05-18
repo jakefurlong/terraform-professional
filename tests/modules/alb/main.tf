@@ -1,9 +1,7 @@
 module "alb" {
   source = "../../../modules/alb"
 
-  security_group_name = "nimbusdevops-test-sg"
-  target_group_name   = "nimbusdevops-test-tg"
-  load_balancer_name  = "nimbusdevops-test-alb"
+  stack_name = "nimbusdevops-test"
   vpc_id = null
   subnet_ids = []
   server_port = 8080
