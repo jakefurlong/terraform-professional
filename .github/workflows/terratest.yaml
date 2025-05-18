@@ -36,6 +36,7 @@ jobs:
         uses: hashicorp/setup-terraform@v2
         with:
           terraform_version: 1.11.4
+          terraform_wrapper: false # very important
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
@@ -50,6 +51,19 @@ jobs:
           go mod init vpc_test || true
           go get github.com/gruntwork-io/terratest/modules/terraform
           go get github.com/stretchr/testify/assert
+
+      - name: Debug state file and outputs
+        working-directory: tests/modules/vpc
+        run: |
+          terraform init
+          terraform apply -auto-approve
+          echo "=== Raw terraform output ==="
+          terraform output
+          echo "=== Output as JSON ==="
+          terraform output -json
+          echo "=== Show state ==="
+          terraform show
+
 
       - name: Run Terratest
         working-directory: tests/modules/vpc
