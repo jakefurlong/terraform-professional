@@ -42,7 +42,7 @@ jobs:
 
 
       - name: Install Go dependencies
-        working-directory: tests/modules/asg
+        working-directory: tests/integration/alb_asg
         run: |
           go mod init vpc_test || true
           go get github.com/gruntwork-io/terratest/modules/terraform
