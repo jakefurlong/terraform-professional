@@ -39,7 +39,7 @@ variable "enable_autoscaling" {
   default     = true
 }
 
-variable "target_group_arn" {
+variable "aws_target_group_arn" {
   description = "Optional target group ARN to attach to ASG"
   type        = string
   default     = null
