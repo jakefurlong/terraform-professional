@@ -1,10 +1,10 @@
 name: Terratest for ASG Module
 
 on:
-  push:
-    branches: [test]
-  pull_request:
-    branches: [test]
+  workflow_run:
+    workflows: ["Modular Terraform Unit Tests with Promotion"]
+    types:
+      - completed
 
 permissions:
   id-token: write
