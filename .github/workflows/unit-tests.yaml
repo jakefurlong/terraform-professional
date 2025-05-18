@@ -1,4 +1,4 @@
-name: Modular Unit Tests with Promotion
+name: Modular Terraform Unit Tests with Promotion
 
 on:
   push:
