@@ -1,18 +1,10 @@
 name: Terratest for ASG Module
 
 on:
-  push:
-    paths:
-      - 'modules/asg/**'
-      - 'tests/modules/asg/**'
-      - 'modules/alb/**'
-      - 'tests/modules/asg/**'
-  pull_request:
-    paths:
-      - 'modules/asg/**'
-      - 'tests/modules/asg/**'
-      - 'modules/alb/**'
-      - 'tests/modules/alb/**'
+  workflow_run:
+    workflows: ["Modular Terraform Unit Tests with Promotion"]
+    types:
+      - completed
 
 permissions:
   id-token: write
