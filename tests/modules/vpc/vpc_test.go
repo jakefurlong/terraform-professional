@@ -1,4 +1,4 @@
-package test
+package vpc_test
 
 import (
 	"strings"
