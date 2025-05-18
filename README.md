@@ -12,4 +12,4 @@ go mod tidy
 go test -v
 ```
 
-Testing CI
+Testing CI....

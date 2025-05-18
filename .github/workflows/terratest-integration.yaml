@@ -1,4 +1,4 @@
-name: Terratest for ASG Module
+name: Integration test for ASG and ALB
 
 on:
   workflow_run:
