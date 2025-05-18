@@ -52,6 +52,6 @@ jobs:
           go get github.com/gruntwork-io/terratest/modules/terraform
           go get github.com/stretchr/testify/assert
 
-      - name: Run Terratest
+      - name: Run Terratest on VPC module
         working-directory: tests/modules/vpc
         run: go test -v
