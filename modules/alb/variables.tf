@@ -4,19 +4,9 @@ variable "vpc_id" {
   default     = null
 }
 
-variable "security_group_name" {
-  description = "Name of the Security Group"
-  type        = string
-}
-
-variable "load_balancer_name" {
-  description = "Name of the ALB"
-  type        = string
-}
-
-variable "target_group_name" {
-  description = "name of the Target Group"
-  type        = string
+variable "stack_name" {
+  description = "Name of stack resource prefix"
+  type = string
 }
 
 variable "server_port" {

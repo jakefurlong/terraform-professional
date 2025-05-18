@@ -1,5 +1,5 @@
 resource "aws_security_group" "terraform_alb_sg" {
-  name = var.security_group_name
+  name = "${var.stack_name}-alb-sg"
   ingress {
     from_port   = 80
     to_port     = 80
@@ -15,7 +15,7 @@ resource "aws_security_group" "terraform_alb_sg" {
 }
 
 resource "aws_lb" "terraform_alb" {
-  name               = var.load_balancer_name
+  name               = "${var.stack_name}-alb"
   load_balancer_type = "application"
   subnets            = local.effective_subnets
   security_groups    = [aws_security_group.terraform_alb_sg.id]
@@ -54,7 +54,7 @@ resource "aws_lb_listener_rule" "terraform_alb_rule" {
 }
 
 resource "aws_alb_target_group" "terraform_tg" {
-  name     = var.target_group_name
+  name     = "${var.stack_name}-tg"
   port     = var.server_port
   protocol = "HTTP"
   vpc_id   = local.effective_vpc_id
@@ -68,9 +68,4 @@ resource "aws_alb_target_group" "terraform_tg" {
     healthy_threshold   = 2
     unhealthy_threshold = 2
   }
-}
-
-output "alb_dns_name" {
-  value       = aws_lb.terraform_alb.dns_name
-  description = "The domain name of the load balancer"
 }
