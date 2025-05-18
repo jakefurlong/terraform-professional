@@ -1,22 +1,23 @@
-name: Terratest for VPC Module
+name: Terratest for ALB Module
 
 on:
   push:
     paths:
-      - 'modules/vpc/**'
-      - 'tests/modulesvpc/**'
+      - 'modules/alb/**'
+      - 'tests/modules/alb/**'
   pull_request:
     paths:
-      - 'modules/vpc/**'
-      - 'tests/modules/vpc/**'
+      - 'modules/alb/**'
+      - 'tests/modules/alb/**'
 
 permissions:
   id-token: write
-  contents: read
+  contents: read      
+
 
 jobs:
   terratest:
-    name: Terratest (VPC Module)
+    name: Terratest (ALB Module)
     runs-on: ubuntu-latest
 
     env:
@@ -45,12 +46,14 @@ jobs:
 
 
       - name: Install Go dependencies
-        working-directory: tests/modules/vpc
+        working-directory: tests/modules/alb
         run: |
           go mod init vpc_test || true
           go get github.com/gruntwork-io/terratest/modules/terraform
           go get github.com/stretchr/testify/assert
 
-      - name: Run Terratest on VPC module
-        working-directory: tests/modules/vpc
+      - name: Run Terratest on ALB module
+        working-directory: tests/modules/alb
         run: go test -v
+
+
