@@ -63,6 +63,11 @@ jobs:
         working-directory: tests/unit/${{ matrix.module }}
         run: go test -v || true
 
+      - name: Terraform Init (for destroy)
+        if: always()
+        working-directory: tests/unit/${{ matrix.module }}
+        run: terraform init -backend=false
+
       - name: Terraform Destroy (always)
         if: always()
         working-directory: tests/unit/${{ matrix.module }}

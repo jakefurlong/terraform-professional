@@ -5,5 +5,5 @@ output "alb_dns_name" {
 
 output "aws_target_group_arn" {
   description = "ARN of the Target Group"
-  value = null
+  value       = null
 }

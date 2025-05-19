@@ -12,30 +12,30 @@ variable "db_password" {
 
 variable "db_identifier_prefix" {
   description = "Identifier prefix for database"
-  type = string
+  type        = string
 }
 
 variable "db_engine" {
   description = "Type of database engine"
-  type = string
+  type        = string
 }
 
 variable "db_allocated_storage" {
-  description = "Amount of allocated storage for RDS database"  
-  type = number
+  description = "Amount of allocated storage for RDS database"
+  type        = number
 }
 
 variable "db_instance_class" {
   description = "Instance class for RDS database"
-  type = string
+  type        = string
 }
 
 variable "db_skip_final_snapshot" {
   description = "Boolean to tell whether to skip final RDS DB snapshot"
-  type = bool
+  type        = bool
 }
 
 variable "database_name" {
   description = "Name of the RDS database"
-  type = string
+  type        = string
 }
