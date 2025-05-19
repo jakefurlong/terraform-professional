@@ -57,7 +57,7 @@ jobs:
       - name: Terraform Validate
         working-directory: tests/unit/${{ matrix.module }}
         run: |
-          terraform init -backend=false
+          terraform init
           terraform validate
 
       - name: Run Terratest for ${{ matrix.module }}
@@ -67,7 +67,7 @@ jobs:
       - name: Terraform Init (for destroy)
         if: always()
         working-directory: tests/unit/${{ matrix.module }}
-        run: terraform init -backend=false
+        run: terraform init
 
       - name: Terraform Destroy (always)
         if: always()
