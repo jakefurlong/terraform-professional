@@ -39,3 +39,13 @@ variable "database_name" {
   description = "Name of the RDS database"
   type        = string
 }
+
+variable "vpc_id" {
+  description = "VPC ID for the RDS instance"
+  type        = string
+}
+
+variable "subnet_ids" {
+  description = "List of private subnet IDs for the RDS instance"
+  type        = list(string)
+}
