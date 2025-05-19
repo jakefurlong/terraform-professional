@@ -49,9 +49,19 @@ jobs:
           go get github.com/gruntwork-io/terratest/modules/terraform
           go get github.com/stretchr/testify/assert
 
+      - name: Terraform Fmt Check
+        working-directory: tests/unit/${{ matrix.module }}
+        run: terraform fmt -check -recursive
+
+      - name: Terraform Validate
+        working-directory: tests/unit/${{ matrix.module }}
+        run: |
+          terraform init -backend=false
+          terraform validate
+
       - name: Run Terratest for ${{ matrix.module }}
         working-directory: tests/unit/${{ matrix.module }}
-        run: go test -v || true  # Let destroy run even if test fails
+        run: go test -v || true
 
       - name: Terraform Destroy (always)
         if: always()
