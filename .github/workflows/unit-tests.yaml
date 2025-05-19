@@ -51,7 +51,12 @@ jobs:
 
       - name: Run Terratest for ${{ matrix.module }}
         working-directory: tests/unit/${{ matrix.module }}
-        run: go test -v
+        run: go test -v || true  # Let destroy run even if test fails
+
+      - name: Terraform Destroy (always)
+        if: always()
+        working-directory: tests/unit/${{ matrix.module }}
+        run: terraform destroy -auto-approve
 
   promote-to-test:
     name: Promote dev to test

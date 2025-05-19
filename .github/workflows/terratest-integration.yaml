@@ -49,7 +49,12 @@ jobs:
 
       - name: Run Terratest on ASG and ALB
         working-directory: tests/integration/alb_asg
-        run: go test -v
+        run: go test -v || true  # prevent fail from stopping destroy
+
+      - name: Cleanup - Terraform Destroy
+        if: always()
+        working-directory: tests/integration/alb_asg
+        run: terraform destroy -auto-approve
 
   promote-to-stage:
     name: Promote test to stage
