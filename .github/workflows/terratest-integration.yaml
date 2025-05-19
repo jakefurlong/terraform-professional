@@ -8,16 +8,16 @@ on:
 
 permissions:
   id-token: write
-  contents: read      
+  contents: write  # ✅ must be write to allow promotion push
 
+env:
+  AWS_REGION: us-west-1
 
 jobs:
-  terratest:
-    name: Terratest (asg Module)
+  run-integration:
+    name: Terratest (ASG and ALB Integration)
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}  # ✅ prevents job if unit tests failed
     runs-on: ubuntu-latest
-
-    env:
-      AWS_REGION: us-west-1
 
     steps:
       - name: Checkout repo
@@ -32,7 +32,7 @@ jobs:
         uses: hashicorp/setup-terraform@v2
         with:
           terraform_version: 1.11.4
-          terraform_wrapper: false # very important
+          terraform_wrapper: false
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
@@ -40,16 +40,41 @@ jobs:
           role-to-assume: arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/github-actions-deploy
           aws-region: ${{ env.AWS_REGION }}
 
-
       - name: Install Go dependencies
         working-directory: tests/integration/alb_asg
         run: |
-          go mod init vpc_test || true
+          go mod init alb_asg_test || true
           go get github.com/gruntwork-io/terratest/modules/terraform
           go get github.com/stretchr/testify/assert
 
-      - name: Run Terratest on asg module
+      - name: Run Terratest on ASG and ALB
         working-directory: tests/integration/alb_asg
         run: go test -v
 
+  promote-to-stage:
+    name: Promote test to stage
+    needs: run-integration
+    if: ${{ success() }}
+    runs-on: ubuntu-latest
 
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Configure Git
+        run: |
+          git config --global user.name "CI Bot"
+          git config --global user.email "ci-bot@example.com"
+
+      - name: Promote test to stage
+        run: |
+          git fetch origin
+          git checkout test
+          git pull origin test
+          git checkout -B stage
+          git push https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }} stage --force
+
+      - name: Log success
+        run: echo "✅ Integration tests passed. Promoted test → stage."
