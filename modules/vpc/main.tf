@@ -123,6 +123,6 @@ resource "aws_security_group" "default_sg" {
   }
 
   tags = {
-    Name = "sg-${var.aws_network_name}"
+    Name = "${var.aws_network_name}-default-sg"
   }
 }
