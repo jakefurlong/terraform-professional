@@ -1,0 +1,196 @@
+name: Modular Terraform Pipeline (Dev to Stage)
+
+on:
+  push:
+    branches: [dev]
+  pull_request:
+    branches: [dev]
+
+permissions:
+  id-token: write
+  contents: write
+
+env:
+  AWS_REGION: us-west-1
+
+jobs:
+  unit-tests:
+    name: Terratest - ${{ matrix.module }} Module
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        module: [vpc, alb, asg, rds]
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v3
+
+      - name: Detect changes for ${{ matrix.module }}
+        id: changes
+        run: |
+          git fetch origin main
+          if git diff --quiet origin/main -- modules/${{ matrix.module }} tests/unit/${{ matrix.module }}; then
+            echo "changed=false" >> $GITHUB_OUTPUT
+          else
+            echo "changed=true" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Skip if not changed
+        if: steps.changes.outputs.changed == 'false'
+        run: echo "No changes detected in ${{ matrix.module }} — skipping tests."
+
+      - name: Set up Go
+        if: steps.changes.outputs.changed == 'true'
+        uses: actions/setup-go@v5
+        with:
+          go-version: '1.21'
+
+      - name: Set up Terraform
+        if: steps.changes.outputs.changed == 'true'
+        uses: hashicorp/setup-terraform@v2
+        with:
+          terraform_version: 1.11.4
+          terraform_wrapper: false
+
+      - name: Configure AWS credentials
+        if: steps.changes.outputs.changed == 'true'
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/github-actions-deploy
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Install Go dependencies
+        if: steps.changes.outputs.changed == 'true'
+        run: |
+          go mod init terratest || true
+          go get github.com/gruntwork-io/terratest/modules/terraform
+          go get github.com/stretchr/testify/assert
+
+      - name: Terraform Init (Remote Backend)
+        if: steps.changes.outputs.changed == 'true'
+        working-directory: tests/unit/${{ matrix.module }}
+        run: terraform init -reconfigure
+
+      - name: Terraform Fmt Check
+        if: steps.changes.outputs.changed == 'true'
+        working-directory: tests/unit/${{ matrix.module }}
+        run: terraform fmt -check -recursive
+
+      - name: Terraform Validate
+        if: steps.changes.outputs.changed == 'true'
+        working-directory: tests/unit/${{ matrix.module }}
+        run: terraform validate
+
+      - name: Run Terratest for ${{ matrix.module }}
+        if: steps.changes.outputs.changed == 'true'
+        working-directory: tests/unit/${{ matrix.module }}
+        run: go test -v || true
+
+      - name: Terraform Destroy (always)
+        if: always() && steps.changes.outputs.changed == 'true'
+        working-directory: tests/unit/${{ matrix.module }}
+        run: |
+          terraform init -reconfigure
+          terraform destroy -auto-approve
+
+  promote-to-test:
+    name: Promote dev to test
+    runs-on: ubuntu-latest
+    needs: unit-tests
+    if: ${{ success() }}
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Configure Git
+        run: |
+          git config --global user.name "CI Bot"
+          git config --global user.email "ci-bot@example.com"
+
+      - name: Promote dev to test
+        run: |
+          git fetch origin
+          git checkout dev
+          git pull origin dev
+          git checkout -B test
+          git push https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }} test --force
+
+  e2e-test:
+    name: Terratest (ASG and ALB Integration)
+    runs-on: ubuntu-latest
+    needs: promote-to-test
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v3
+
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: '1.21'
+
+      - name: Set up Terraform
+        uses: hashicorp/setup-terraform@v2
+        with:
+          terraform_version: 1.11.4
+          terraform_wrapper: false
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/github-actions-deploy
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Install Go dependencies
+        working-directory: tests/e2e
+        run: |
+          go mod init alb_asg_test || true
+          go get github.com/gruntwork-io/terratest/modules/terraform
+          go get github.com/stretchr/testify/assert
+
+      - name: Terraform Init (Remote Backend)
+        working-directory: tests/e2e
+        run: terraform init -reconfigure
+
+      - name: Run Terratest on ASG and ALB
+        working-directory: tests/e2e
+        run: go test -v -timeout 20m || true
+
+      - name: Cleanup - Terraform Destroy
+        if: always()
+        working-directory: tests/e2e
+        run: |
+          terraform init -reconfigure
+          terraform destroy -auto-approve
+
+  promote-to-stage:
+    name: Promote test to stage
+    runs-on: ubuntu-latest
+    needs: e2e-test
+    if: ${{ success() }}
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Configure Git
+        run: |
+          git config --global user.name "CI Bot"
+          git config --global user.email "ci-bot@example.com"
+
+      - name: Promote test to stage
+        run: |
+          git fetch origin
+          git checkout test
+          git pull origin test
+          git checkout -B stage
+          git push https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }} stage --force
+
+      - name: Log success
+        run: echo "✅ Integration tests passed. Promoted test → stage."

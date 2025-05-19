@@ -1,5 +1,5 @@
 resource "aws_db_instance" "rds_database" {
-  identifier_prefix = var.db_identifier_prefix
+  identifier_prefix   = var.db_identifier_prefix
   engine              = var.db_engine
   allocated_storage   = var.db_allocated_storage
   instance_class      = var.db_instance_class

@@ -6,7 +6,7 @@ variable "vpc_id" {
 
 variable "stack_name" {
   description = "Name of stack resource prefix"
-  type = string
+  type        = string
 }
 
 variable "server_port" {
@@ -24,4 +24,10 @@ variable "subnet_ids" {
 variable "alb_sg_ingress_cidr_range" {
   description = "Allow CIDR range for ALB ingress"
   type        = list(string)
+}
+
+variable "aws_vpc_id" {
+  description = "VPC ID"
+  type = string
+  default = null
 }

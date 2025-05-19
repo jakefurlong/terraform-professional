@@ -26,7 +26,8 @@ resource "aws_autoscaling_group" "terraform_asg" {
   desired_capacity   = 2
   max_size           = var.max_size
   min_size           = var.min_size
-  target_group_arns = var.aws_target_group_arn != null ? [var.aws_target_group_arn] : null
+  target_group_arns  = var.aws_target_group_arn != null ? [var.aws_target_group_arn] : null
+  force_delete       = true
 
   launch_template {
     id      = aws_launch_template.terraform_lt.id
@@ -42,6 +43,8 @@ resource "aws_autoscaling_group" "terraform_asg" {
     value               = "${var.asg_name}-instance"
     propagate_at_launch = true
   }
+
+  depends_on = [aws_launch_template.terraform_lt]
 }
 
 resource "aws_autoscaling_schedule" "scale_out_during_business_hours" {
