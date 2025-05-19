@@ -1,6 +1,6 @@
 resource "aws_db_subnet_group" "rds_subnet_group" {
   name       = "${var.db_identifier_prefix}-subnet-group"
-  subnet_ids = var.subnet_ids
+  subnet_ids = local.effective_subnet_ids
 
   tags = {
     Name = "${var.db_identifier_prefix}-subnet-group"
@@ -10,13 +10,13 @@ resource "aws_db_subnet_group" "rds_subnet_group" {
 resource "aws_security_group" "rds_sg" {
   name        = "${var.db_identifier_prefix}-rds-sg"
   description = "Allow inbound MySQL access"
-  vpc_id      = var.vpc_id
+  vpc_id      = local.effective_vpc_id
 
   ingress {
     from_port   = 3306
     to_port     = 3306
     protocol    = "tcp"
-    cidr_blocks = ["10.0.0.0/8"] # Update to match your app subnet CIDR
+    cidr_blocks = var.rds_sg_ingress # Update to match your app subnet CIDR
   }
 
   egress {

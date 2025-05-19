@@ -49,3 +49,9 @@ variable "subnet_ids" {
   description = "List of private subnet IDs for the RDS instance"
   type        = list(string)
 }
+
+variable "rds_sg_ingress" {
+  description = "CIDR block allowed to RDS DB"
+  type = list(string)
+  default = ["172.16.0.0/8"]
+}
