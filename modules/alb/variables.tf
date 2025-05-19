@@ -25,3 +25,9 @@ variable "alb_sg_ingress_cidr_range" {
   description = "Allow CIDR range for ALB ingress"
   type        = list(string)
 }
+
+variable "aws_vpc_id" {
+  description = "VPC ID"
+  type = string
+  default = null
+}
