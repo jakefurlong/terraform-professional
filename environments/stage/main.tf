@@ -5,15 +5,15 @@ module "vpc" {
   aws_network_name   = "nimbusdevops-stage"
 }
 
-#module "alb" {
-#  source = "../../modules/alb"
-#
-#  stack_name                = "nimbusdevops-stage"
-#  vpc_id                    = module.vpc.vpc_id
-#  subnet_ids                = module.vpc.public_subnet_ids
-#  server_port               = 8080
-#  alb_sg_ingress_cidr_range = ["0.0.0.0/0"]
-#}
+module "alb" {
+  source = "../../modules/alb"
+
+  stack_name                = "nimbusdevops-stage"
+  vpc_id                    = module.vpc.vpc_id
+  subnet_ids                = module.vpc.public_subnet_ids
+  server_port               = 8080
+  alb_sg_ingress_cidr_range = ["0.0.0.0/0"]
+}
 #
 #module "asg" {
 #  source = "../../modules/asg"
