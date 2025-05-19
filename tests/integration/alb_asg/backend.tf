@@ -1,6 +1,6 @@
 terraform {
   backend "s3" {
-    bucket         = "your-terraform-state-bucket"
+    bucket         = "nimbusdevops"
     key            = "terraform-state/tests/integration/alb_asg/terraform.tfstate"
     region         = "us-west-1"
     encrypt        = true
