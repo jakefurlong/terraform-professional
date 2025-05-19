@@ -6,7 +6,7 @@ variable "vpc_id" {
 
 variable "stack_name" {
   description = "Name of stack resource prefix"
-  type = string
+  type        = string
 }
 
 variable "server_port" {
