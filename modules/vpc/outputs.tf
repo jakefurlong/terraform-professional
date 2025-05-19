@@ -14,6 +14,10 @@ output "public_subnet_ids" {
   value = [for s in aws_subnet.public : s.id]
 }
 
+output "private_subnet_ids" {
+  value = [for s in aws_subnet.private : s.id]
+}
+
 output "route_table_association_ids" {
   value = [for rta in aws_route_table_association.public : rta.id]
 }
