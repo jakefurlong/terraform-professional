@@ -9,5 +9,5 @@ module "asg" {
   max_size           = 2
   min_size           = 2
   enable_autoscaling = true
-  # optional aws_target_group_arn = module.alb.target_group_arn - required for integration testing
+  private_subnet_ids = null
 }
