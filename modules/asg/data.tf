@@ -7,9 +7,4 @@ data "aws_subnets" "default_private" {
     name   = "vpc-id"
     values = [data.aws_vpc.default.id]
   }
-
-  filter {
-    name   = "tag:Name"
-    values = ["*private*"]
-  }
 }
