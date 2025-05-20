@@ -44,3 +44,9 @@ variable "aws_target_group_arn" {
   type        = string
   default     = null
 }
+
+variable "private_subnet_ids" {
+  type        = list(string)
+  description = "List of private subnet IDs to launch ASG instances into"
+  default     = []
+}
