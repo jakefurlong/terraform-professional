@@ -22,7 +22,7 @@ resource "aws_launch_template" "terraform_lt" {
 
 resource "aws_autoscaling_group" "terraform_asg" {
   name               = "${var.asg_name}-asg"
-  vpc_zone_identifier = local.selected_private_subnets
+  vpc_zone_identifier = var.aws_vpc_zone_identifier
   desired_capacity   = 2
   max_size           = var.max_size
   min_size           = var.min_size

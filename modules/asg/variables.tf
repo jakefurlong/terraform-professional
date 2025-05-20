@@ -45,8 +45,7 @@ variable "aws_target_group_arn" {
   default     = null
 }
 
-variable "private_subnet_ids" {
-  type        = list(string)
-  description = "List of private subnet IDs to launch ASG instances into"
-  default     = []
+variable "aws_vpc_zone_identifier" {
+  description = "private subnets for ASG"
+  type = list(string)
 }
