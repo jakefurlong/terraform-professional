@@ -53,5 +53,5 @@ variable "subnet_ids" {
 variable "rds_sg_ingress" {
   description = "CIDR block allowed to RDS DB"
   type = list(string)
-  default = ["172.16.0.0/8"]
+  default = ["172.0.0.0/8"]
 }

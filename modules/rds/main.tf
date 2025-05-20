@@ -16,7 +16,7 @@ resource "aws_security_group" "rds_sg" {
     from_port   = 3306
     to_port     = 3306
     protocol    = "tcp"
-    cidr_blocks = var.rds_sg_ingress # Update to match your app subnet CIDR
+    cidr_blocks = var.rds_sg_ingress 
   }
 
   egress {

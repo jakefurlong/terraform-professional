@@ -1,7 +1,7 @@
 module "vpc" {
   source = "../../modules/vpc"
 
-  aws_vpc_cidr_block = "172.16.0.0/16"
+  aws_vpc_cidr_block = "172.0.0.0/16"
   aws_network_name   = "nimbusdevops-test"
 
 }
@@ -17,6 +17,7 @@ module "rds" {
   db_password            = local.db_credentials["password"]
   database_name          = "e2edb"
   db_skip_final_snapshot = true
+  rds_sg_ingress = ["172.0.0.0/16"]
 
   vpc_id     = module.vpc.vpc_id
   subnet_ids = module.vpc.private_subnet_ids

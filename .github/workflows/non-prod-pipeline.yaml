@@ -29,8 +29,8 @@ jobs:
       - name: Detect changes for ${{ matrix.module }}
         id: changes
         run: |
-          git fetch origin main
-          if git diff --quiet origin/main -- modules/${{ matrix.module }} tests/unit/${{ matrix.module }}; then
+          git fetch origin dev
+          if git diff --quiet origin/dev -- modules/${{ matrix.module }} tests/unit/${{ matrix.module }}; then
             echo "changed=false" >> $GITHUB_OUTPUT
           else
             echo "changed=true" >> $GITHUB_OUTPUT
@@ -156,9 +156,9 @@ jobs:
         working-directory: tests/e2e
         run: terraform init -reconfigure
 
-      - name: Run Terratest on ASG and ALB
+      - name: Run End-to-End Terratest
         working-directory: tests/e2e
-        run: go test -v -timeout 20m || true
+        run: go test -v -timeout 30m || true
 
       - name: Cleanup - Terraform Destroy
         if: always()
