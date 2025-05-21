@@ -12,4 +12,9 @@ go mod tidy
 go test -v
 ```
 
-Testing CI
+Use only main
+Look at unit test for PR
+Look at validating unit instead of running unit tests
+Look into pre-commit hook
+Ask your developer - Jeff Lawson
+Check out Atlantis
