@@ -1,3 +1,8 @@
+variable "aws_vpc_id" {
+  description = "VPC ID"
+  type = string
+}
+
 variable "asg_name" {
   description = "The name to use for all the cluster resources"
   type        = string

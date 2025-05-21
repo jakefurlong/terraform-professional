@@ -18,7 +18,6 @@ variable "server_port" {
 variable "subnet_ids" {
   description = "List of subnet IDs to use. Defaults to subnets in default VPC if not set."
   type        = list(string)
-  default     = []
 }
 
 variable "alb_sg_ingress_cidr_range" {
@@ -29,5 +28,4 @@ variable "alb_sg_ingress_cidr_range" {
 variable "aws_vpc_id" {
   description = "VPC ID"
   type = string
-  default = null
 }

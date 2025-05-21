@@ -1,5 +1,6 @@
 resource "aws_security_group" "terraform_sg" {
   name = "${var.asg_name}-sg"
+  vpc_id = var.aws_vpc_id
 
   ingress {
     from_port   = var.server_port

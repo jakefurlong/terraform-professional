@@ -10,4 +10,6 @@ module "asg" {
   min_size                = 2
   enable_autoscaling      = true
   aws_vpc_zone_identifier = ["subnet-08902ab9b0c0b2bad", "subnet-002d54f12475a6066"]
+
+  aws_vpc_id = "vpc-837eafe5"
 }

@@ -18,7 +18,7 @@ func TestASG(t *testing.T) {
 	defer terraform.Destroy(t, terraformOptions)
 	terraform.InitAndApply(t, terraformOptions)
 
-	// RDS Database Address
+	// ASG Name
 	asg, err := terraform.OutputE(t, terraformOptions, "aws_autoscaling_group_name")
 	assert.NoError(t, err, "Failed to get ASG name.")
 	t.Logf("ASG Name: %s", asg)

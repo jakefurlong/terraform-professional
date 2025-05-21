@@ -2,7 +2,7 @@ resource "aws_vpc" "custom_vpc" {
   cidr_block = var.aws_vpc_cidr_block
 
   tags = {
-    Name = "vpc-${var.aws_network_name}"
+    Name = "${var.aws_network_name}-vpc"
   }
 }
 
@@ -10,7 +10,7 @@ resource "aws_internet_gateway" "custom_igw" {
   vpc_id = aws_vpc.custom_vpc.id
 
   tags = {
-    Name = "igw-${var.aws_network_name}"
+    Name = "${var.aws_network_name}-igw"
   }
 }
 
@@ -23,7 +23,22 @@ resource "aws_route_table" "public_rt" {
   }
 
   tags = {
-    Name = "rt-public-${var.aws_network_name}"
+    Name = "${var.aws_network_name}-rt-public"
+  }
+}
+
+resource "aws_route_table" "private_rt" {
+  for_each = aws_nat_gateway.nat
+
+  vpc_id = aws_vpc.custom_vpc.id
+
+  route {
+    cidr_block     = "0.0.0.0/0"
+    nat_gateway_id = each.value.id
+  }
+
+  tags = {
+    Name = "${var.aws_network_name}-rt-private-${each.key}"
   }
 }
 
@@ -85,22 +100,6 @@ resource "aws_route_table_association" "private" {
 
   subnet_id      = each.value.id
   route_table_id = aws_route_table.private_rt[each.key].id
-}
-
-
-resource "aws_route_table" "private_rt" {
-  for_each = aws_nat_gateway.nat
-
-  vpc_id = aws_vpc.custom_vpc.id
-
-  route {
-    cidr_block     = "0.0.0.0/0"
-    nat_gateway_id = each.value.id
-  }
-
-  tags = {
-    Name = "${var.aws_network_name}-rt-private-${each.key}"
-  }
 }
 
 resource "aws_security_group" "default_sg" {

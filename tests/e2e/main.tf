@@ -3,6 +3,7 @@ module "vpc" {
 
   aws_vpc_cidr_block = "172.0.0.0/16"
   aws_network_name   = "nimbusdevops-test"
+  azs                = ["us-west-1b", "us-west-1c"]
 
 }
 
@@ -17,7 +18,7 @@ module "rds" {
   db_password            = local.db_credentials["password"]
   database_name          = "e2edb"
   db_skip_final_snapshot = true
-  rds_sg_ingress = ["172.0.0.0/16"]
+  rds_sg_ingress         = ["172.0.0.0/16"]
 
   vpc_id     = module.vpc.vpc_id
   subnet_ids = module.vpc.private_subnet_ids
@@ -25,10 +26,11 @@ module "rds" {
 
 
 module "alb" {
-  source                    = "../../modules/alb"
+  source = "../../modules/alb"
+
   stack_name                = "nimbusdevops-test"
-  vpc_id                    = null
-  subnet_ids                = []
+  aws_vpc_id                = module.vpc.vpc_id
+  subnet_ids                = module.vpc.public_subnet_ids
   server_port               = 8080
   alb_sg_ingress_cidr_range = ["0.0.0.0/0"]
 }
@@ -36,14 +38,16 @@ module "alb" {
 module "asg" {
   source = "../../modules/asg"
 
-  asg_name             = "nimbusdevops-test"
-  server_port          = 8080
-  asg_sg_ingress       = ["0.0.0.0/0"]
-  machine_image        = "ami-04f7a54071e74f488"
-  instance_type        = "t3.micro"
-  max_size             = 2
-  min_size             = 2
-  enable_autoscaling   = true
-  aws_target_group_arn = module.alb.aws_target_group_arn
+  asg_name                = "nimbusdevops-test"
+  server_port             = 8080
+  asg_sg_ingress          = ["0.0.0.0/0"]
+  machine_image           = "ami-04f7a54071e74f488"
+  instance_type           = "t3.micro"
+  max_size                = 2
+  min_size                = 2
+  enable_autoscaling      = true
+  aws_target_group_arn    = module.alb.aws_target_group_arn
+  aws_vpc_zone_identifier = module.vpc.private_subnet_ids
+  aws_vpc_id              = module.vpc.vpc_id
 }
 
