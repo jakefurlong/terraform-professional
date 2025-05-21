@@ -50,4 +50,3 @@ module "asg" {
   aws_vpc_zone_identifier = module.vpc.private_subnet_ids
   aws_vpc_id              = module.vpc.vpc_id
 }
-

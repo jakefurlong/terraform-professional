@@ -1,3 +1,7 @@
+output "vpc_id" {
+  value = aws_vpc.custom_vpc.id
+}
+
 output "vpc_name" {
   value = aws_vpc.custom_vpc.tags["Name"]
 }
