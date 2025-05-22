@@ -1,5 +1,5 @@
 module "vpc" {
-  source = "../../modules/vpc"
+  source = "git::https://github.com/jakefurlong/terraform-modules.git//vpc?ref=v1.0.1"
 
   aws_vpc_cidr_block = "172.0.0.0/16"
   aws_network_name   = "nimbusdevops-test"
@@ -8,7 +8,7 @@ module "vpc" {
 }
 
 module "rds" {
-  source = "../../modules/rds"
+  source = "git::https://github.com/jakefurlong/terraform-modules.git//rds?ref=v1.0.1"
 
   db_identifier_prefix   = "e2e-db"
   db_engine              = "mysql"
@@ -26,7 +26,7 @@ module "rds" {
 
 
 module "alb" {
-  source = "../../modules/alb"
+  source = "git::https://github.com/jakefurlong/terraform-modules.git//alb?ref=v1.0.1"
 
   stack_name                = "nimbusdevops-test"
   aws_vpc_id                = module.vpc.vpc_id
@@ -36,7 +36,7 @@ module "alb" {
 }
 
 module "asg" {
-  source = "../../modules/asg"
+  source = "git::https://github.com/jakefurlong/terraform-modules.git//asg?ref=v1.0.1"
 
   asg_name                = "nimbusdevops-test"
   server_port             = 8080
