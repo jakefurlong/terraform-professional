@@ -1,5 +1,5 @@
 module "rds" {
-  source = "../../../modules/rds"
+  source = "git::https://github.com/jakefurlong/terraform-modules.git//rds?ref=v1.0.1"
 
   db_username            = local.db_credentials["username"]
   db_password            = local.db_credentials["password"]
