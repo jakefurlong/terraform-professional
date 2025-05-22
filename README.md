@@ -22,8 +22,7 @@ pre-commit install
 pre-commit run --all-files # or dont' run this, it will run on commit...
 ```
 
-Look at unit test for PR 
+Look at unit test for PR
 Look at validating unit instead of running unit tests
 Look into pre-commit hook
-Ask your developer - Jeff Lawson
 Check out Atlantis
