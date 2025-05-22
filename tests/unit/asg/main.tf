@@ -1,5 +1,5 @@
 module "asg" {
-  source = "../../../modules/asg"
+  source = "git::https://github.com/jakefurlong/terraform-modules.git//asg?ref=v1.0.1"
 
   asg_name                = "nimbusdevops-test"
   server_port             = 8080
