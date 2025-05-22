@@ -1,5 +1,5 @@
 module "alb" {
-  source = "../../../modules/alb"
+  source = "git::https://github.com/jakefurlong/terraform-modules.git//alb?ref=v1.0.1"
 
   stack_name                = "nimbusdevops-test"
   aws_vpc_id                = "vpc-837eafe5"
